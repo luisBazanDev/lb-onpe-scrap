@@ -1,0 +1,23 @@
+{
+  "api": {
+    "baseUrl": "https://resultadoelectoral.onpe.gob.pe/presentacion-backend/actas/buscar/mesa",
+    "timeout": 10000
+  },
+  "rateLimit": {
+    "queriesPerMinute": 30
+  },
+  "script": {
+    "retryAttempts": 2,
+    "consecutiveInvalidThreshold": 20,
+    "backoffBaseMs": 1000
+  },
+  "server": {
+    "port": 3000,
+    "refreshIntervalMs": 30000
+  },
+  "paths": {
+    "database": "db.json",
+    "logs": "logs.txt",
+    "progress": ".cache/.progress"
+  }
+}

@@ -1,18 +1,27 @@
 {
-  "name": "typescript-project",
+  "name": "onpe-voting-transparency",
   "version": "1.0.0",
-  "description": "Simple TypeScript project",
+  "description": "ONPE voting data transparency app with charts",
   "main": "src/index.ts",
   "type": "module",
   "scripts": {
-    "start": "node --loader ts-node/esm src/index.ts",
+    "start": "node src/server.js",
+    "bulk-data": "node --loader ts-node/esm scripts/bulk-get-data.ts",
+    "bulk-data:force": "node --loader ts-node/esm scripts/bulk-get-data.ts --force",
+    "sample-data": "node scripts/generate-sample-data.js",
     "dev": "node --watch --loader ts-node/esm src/index.ts"
   },
-  "keywords": [],
+  "keywords": ["voting", "transparency", "onpe", "peru"],
   "author": "",
   "license": "ISC",
+  "dependencies": {
+    "express": "^4.18.2",
+    "axios": "^1.6.2"
+  },
   "devDependencies": {
     "typescript": "^5.3.3",
-    "ts-node": "^10.9.1"
+    "ts-node": "^10.9.1",
+    "@types/express": "^4.17.21",
+    "@types/node": "^20.10.6"
   }
 }

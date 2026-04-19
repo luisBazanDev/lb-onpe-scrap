@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Conteo de Votos ONPE - Transparencia Electoral</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+        'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+        sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding: 20px;
+      color: #333;
+    }
+
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    header {
+      background: white;
+      border-radius: 8px;
+      padding: 30px;
+      margin-bottom: 30px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      text-align: center;
+    }
+
+    header h1 {
+      color: #667eea;
+      font-size: 2.5em;
+      margin-bottom: 10px;
+    }
+
+    header p {
+      color: #666;
+      font-size: 1.1em;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 15px;
+      margin-bottom: 30px;
+    }
+
+    .stat-card {
+      background: white;
+      border-radius: 8px;
+      padding: 20px;
+      text-align: center;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      border-left: 4px solid #667eea;
+    }
+
+    .stat-card h3 {
+      color: #666;
+      font-size: 0.9em;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 10px;
+    }
+
+    .stat-card .value {
+      color: #667eea;
+      font-size: 2em;
+      font-weight: bold;
+    }
+
+    .stat-card.secondary {
+      border-left-color: #764ba2;
+    }
+
+    .stat-card.secondary .value {
+      color: #764ba2;
+    }
+
+    .stat-card.danger {
+      border-left-color: #f56565;
+    }
+
+    .stat-card.danger .value {
+      color: #f56565;
+    }
+
+    .main-content {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 30px;
+    }
+
+    .card {
+      background: white;
+      border-radius: 8px;
+      padding: 30px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .card h2 {
+      color: #333;
+      margin-bottom: 25px;
+      font-size: 1.8em;
+      border-bottom: 3px solid #667eea;
+      padding-bottom: 10px;
+    }
+
+    #chartContainer {
+      position: relative;
+      height: 500px;
+      margin-bottom: 20px;
+    }
+
+    .loading {
+      text-align: center;
+      padding: 40px;
+      color: #999;
+    }
+
+    .loading-spinner {
+      display: inline-block;
+      width: 40px;
+      height: 40px;
+      border: 4px solid #f3f3f3;
+      border-top: 4px solid #667eea;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin-bottom: 15px;
+    }
+
+    @keyframes spin {
+      0% {
+        transform: rotate(0deg);
+      }
+      100% {
+        transform: rotate(360deg);
+      }
+    }
+
+    .error {
+      background: #fed7d7;
+      color: #c53030;
+      padding: 20px;
+      border-radius: 8px;
+      margin: 20px 0;
+      border-left: 4px solid #c53030;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+
+    table thead {
+      background: #f7fafc;
+      border-bottom: 2px solid #667eea;
+    }
+
+    table th {
+      padding: 15px;
+      text-align: left;
+      color: #667eea;
+      font-weight: 600;
+      text-transform: uppercase;
+      font-size: 0.85em;
+      letter-spacing: 0.5px;
+    }
+
+    table td {
+      padding: 12px 15px;
+      border-bottom: 1px solid #e2e8f0;
+    }
+
+    table tr:hover {
+      background: #f7fafc;
+    }
+
+    .percentage {
+      color: #667eea;
+      font-weight: 600;
+    }
+
+    footer {
+      text-align: center;
+      margin-top: 40px;
+      color: white;
+      font-size: 0.9em;
+    }
+
+    .update-time {
+      color: #999;
+      font-size: 0.9em;
+      margin-top: 20px;
+    }
+
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 15px;
+      margin-bottom: 25px;
+    }
+
+    .info-item {
+      background: #f7fafc;
+      padding: 15px;
+      border-radius: 6px;
+      text-align: center;
+    }
+
+    .info-item label {
+      display: block;
+      color: #666;
+      font-size: 0.85em;
+      text-transform: uppercase;
+      margin-bottom: 5px;
+      letter-spacing: 0.5px;
+    }
+
+    .info-item .number {
+      color: #667eea;
+      font-size: 1.8em;
+      font-weight: bold;
+    }
+
+    @media (max-width: 768px) {
+      header h1 {
+        font-size: 1.8em;
+      }
+
+      .stats {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      table {
+        font-size: 0.9em;
+      }
+
+      table th,
+      table td {
+        padding: 10px 8px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>🗳️ Conteo de Votos ONPE</h1>
+      <p>Transparencia Electoral del Perú - Datos en Tiempo Real</p>
+    </header>
+
+    <div class="stats" id="statsContainer">
+      <div class="loading">
+        <div class="loading-spinner"></div>
+        <p>Cargando datos...</p>
+      </div>
+    </div>
+
+    <div class="main-content">
+      <div class="card">
+        <h2>Votos por Partido Político</h2>
+        <div id="chartContainer">
+          <div class="loading">
+            <div class="loading-spinner"></div>
+            <p>Cargando gráfico...</p>
+          </div>
+        </div>
+        <div class="update-time" id="updateTime"></div>
+        <table id="partidosTable">
+          <thead>
+            <tr>
+              <th>Partido Político</th>
+              <th style="text-align: right;">Votos Totales</th>
+              <th style="text-align: right;">Porcentaje</th>
+            </tr>
+          </thead>
+          <tbody id="partidosTableBody">
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <footer>
+      <p>© 2026 ONPE - Oficina Nacional de Procesos Electorales</p>
+      <p style="margin-top: 10px; opacity: 0.8;">Datos recopilados de forma transparente desde la API oficial de ONPE</p>
+    </footer>
+  </div>
+
+  <script>
+    let chart = null;
+
+    async function loadData() {
+      try {
+        const [summary, partidos, metadata] = await Promise.all([
+          fetch('/api/summary').then(r => {
+            if (!r.ok) throw new Error('Base de datos no encontrada');
+            return r.json();
+          }),
+          fetch('/api/partidos').then(r => r.json()),
+          fetch('/api/metadata').then(r => r.json()),
+        ]);
+
+        // Update stats
+        updateStats(summary);
+        
+        // Update chart and table
+        updateChart(partidos, summary);
+        updateTable(partidos, summary);
+
+        // Update time
+        updateTime(metadata);
+      } catch (error) {
+        console.error('Error loading data:', error);
+        document.getElementById('statsContainer').innerHTML = `
+          <div class="error">
+            <strong>Error al cargar datos:</strong> ${error.message}
+            <p style="margin-top: 10px; font-size: 0.9em;">
+              Asegúrate de haber ejecutado: <code>npm run bulk-data</code>
+            </p>
+          </div>
+        `;
+      }
+    }
+
+    function updateStats(summary) {
+      const statsHtml = `
+        <div class="stat-card">
+          <h3>Mesas Contabilizadas</h3>
+          <div class="value">${summary.mesasContabilizadas.toLocaleString()}</div>
+        </div>
+        <div class="stat-card secondary">
+          <h3>Votos Válidos</h3>
+          <div class="value">${summary.totalVotosValidos.toLocaleString()}</div>
+        </div>
+        <div class="stat-card">
+          <h3>Votos Emitidos</h3>
+          <div class="value">${summary.totalVotosEmitidos.toLocaleString()}</div>
+        </div>
+        <div class="stat-card secondary">
+          <h3>Electores Hábiles</h3>
+          <div class="value">${summary.totalElectoresHabiles.toLocaleString()}</div>
+        </div>
+        <div class="stat-card danger">
+          <h3>Votos Nulos</h3>
+          <div class="value">${summary.totalVotosNulos.toLocaleString()}</div>
+        </div>
+        <div class="stat-card">
+          <h3>Votos en Blanco</h3>
+          <div class="value">${summary.totalVotosEnBlanco.toLocaleString()}</div>
+        </div>
+      `;
+      document.getElementById('statsContainer').innerHTML = statsHtml;
+    }
+
+    function updateChart(partidos, summary) {
+      const labels = partidos.map(p => p.adDescripcion);
+      const data = partidos.map(p => p.totalVotos);
+      
+      const colors = [
+        '#667eea',
+        '#764ba2',
+        '#f093fb',
+        '#4facfe',
+        '#00f2fe',
+        '#43e97b',
+        '#fa709a',
+        '#fee140',
+        '#30cfd0',
+        '#a8edea',
+        '#fed6e3',
+        '#5f27cd',
+        '#00d2d3',
+      ];
+
+      const ctx = document.getElementById('chartCanvas');
+      if (!ctx) {
+        document.getElementById('chartContainer').innerHTML = `
+          <canvas id="chartCanvas"></canvas>
+        `;
+      }
+
+      if (chart) {
+        chart.destroy();
+      }
+
+      chart = new Chart(document.getElementById('chartCanvas'), {
+        type: 'bar',
+        data: {
+          labels: labels,
+          datasets: [
+            {
+              label: 'Votos Totales',
+              data: data,
+              backgroundColor: colors.slice(0, labels.length),
+              borderColor: colors.slice(0, labels.length),
+              borderWidth: 1,
+              borderRadius: 6,
+            },
+          ],
+        },
+        options: {
+          indexAxis: 'y',
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              display: false,
+            },
+            tooltip: {
+              backgroundColor: 'rgba(0, 0, 0, 0.8)',
+              padding: 12,
+              titleFont: { size: 14, weight: 'bold' },
+              bodyFont: { size: 13 },
+              callbacks: {
+                label: function (context) {
+                  const votes = context.parsed.x;
+                  const percentage = ((votes / summary.totalVotosValidos) * 100).toFixed(2);
+                  return `${votes.toLocaleString()} votos (${percentage}%)`;
+                },
+              },
+            },
+          },
+          scales: {
+            x: {
+              beginAtZero: true,
+              grid: {
+                color: '#e2e8f0',
+              },
+              ticks: {
+                callback: function (value) {
+                  return value.toLocaleString();
+                },
+              },
+            },
+            y: {
+              grid: {
+                display: false,
+              },
+              ticks: {
+                font: { size: 12 },
+              },
+            },
+          },
+        },
+      });
+    }
+
+    function updateTable(partidos, summary) {
+      const tbody = document.getElementById('partidosTableBody');
+      tbody.innerHTML = partidos
+        .map(
+          (partido) => `
+        <tr>
+          <td>${partido.adDescripcion}</td>
+          <td style="text-align: right;">${partido.totalVotos.toLocaleString()}</td>
+          <td style="text-align: right;">
+            <span class="percentage">
+              ${((partido.totalVotos / summary.totalVotosValidos) * 100).toFixed(2)}%
+            </span>
+          </td>
+        </tr>
+      `
+        )
+        .join('');
+    }
+
+    function updateTime(metadata) {
+      const date = new Date(metadata.lastUpdated);
+      const formatted = date.toLocaleString('es-PE', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+      });
+      document.getElementById('updateTime').textContent = `Última actualización: ${formatted}`;
+    }
+
+    // Load data on page load
+    window.addEventListener('load', loadData);
+
+    // Refresh data every 30 seconds
+    setInterval(loadData, 30000);
+  </script>
+</body>
+</html>
