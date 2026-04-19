@@ -4,8 +4,6 @@ Una aplicación web transparente para contabilizar y visualizar los resultados d
 
 ## Características
 
-### Características
-
 - **Recopilación Automática de Datos**: Script que consulta todas las mesas del ONPE de forma sistemática
 - **Emulación de Cliente Web**: Usa headers de navegador para evitar bloqueos de CORS
 - **Manejo Inteligente de Errores**: Reintentos con backoff exponencial, registros detallados de errores
@@ -251,13 +249,13 @@ PORT=3001 npm start
 
 ## Estructura de datos.md
 
-Consulta `data.md` para:
-- Estructura exacta de `db.json`
-- Campos extraídos de cada mesa
-- Cálculos derivados
-- Notas de validación
+Consulta los siguientes archivos de documentación:
 
-Esta documentación se actualiza cada vez que cambia la estructura de datos.
+- **README.md** - Esta guía completa
+- **QUICKSTART.md** - Guía rápida para empezar en 5 minutos
+- **BROWSER_EMULATION.md** - Detalles técnicos de la emulación de navegador
+- **data.md** - Estructura exacta de `db.json`, campos extraídos, cálculos derivados
+- **config.json** - Opciones configurables
 
 ## Desarrollo
 
