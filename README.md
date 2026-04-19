@@ -4,7 +4,10 @@ Una aplicación web transparente para contabilizar y visualizar los resultados d
 
 ## Características
 
+### Características
+
 - **Recopilación Automática de Datos**: Script que consulta todas las mesas del ONPE de forma sistemática
+- **Emulación de Cliente Web**: Usa headers de navegador para evitar bloqueos de CORS
 - **Manejo Inteligente de Errores**: Reintentos con backoff exponencial, registros detallados de errores
 - **Rate Limiting**: Respeta el límite de 30 consultas por minuto a la API
 - **Persistencia de Progreso**: Continúa desde donde se detuvo si el script falla

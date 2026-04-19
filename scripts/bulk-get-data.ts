@@ -196,6 +196,21 @@ class BulkDataScript {
       const response = await axios.get(API_BASE_URL, {
         params: { codigoMesa },
         timeout: 10000,
+        headers: {
+          'accept': '*/*',
+          'accept-language': 'en-US,en;q=0.8',
+          'content-type': 'application/json',
+          'priority': 'u=1, i',
+          'referer': 'https://resultadoelectoral.onpe.gob.pe/main/actas',
+          'sec-ch-ua': '"Brave";v="147", "Not.A/Brand";v="8", "Chromium";v="147"',
+          'sec-ch-ua-mobile': '?1',
+          'sec-ch-ua-platform': '"Android"',
+          'sec-fetch-dest': 'empty',
+          'sec-fetch-mode': 'cors',
+          'sec-fetch-site': 'same-origin',
+          'sec-gpc': '1',
+          'user-agent': 'Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Mobile Safari/537.36',
+        },
       });
       return response.data;
     } catch (error) {

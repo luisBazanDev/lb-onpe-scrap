@@ -8,10 +8,14 @@
     "start": "node src/server.js",
     "bulk-data": "node --loader ts-node/esm scripts/bulk-get-data.ts",
     "bulk-data:force": "node --loader ts-node/esm scripts/bulk-get-data.ts --force",
-    "sample-data": "node scripts/generate-sample-data.js",
     "dev": "node --watch --loader ts-node/esm src/index.ts"
   },
-  "keywords": ["voting", "transparency", "onpe", "peru"],
+  "keywords": [
+    "voting",
+    "transparency",
+    "onpe",
+    "peru"
+  ],
   "author": "",
   "license": "ISC",
   "dependencies": {
