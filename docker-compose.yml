@@ -20,7 +20,7 @@ services:
       - ./logs.txt:/app/logs.txt
     restart: unless-stopped
     networks:
-      onpe-network:
+      - onpe-network
 
   cloudflare-tunnel:
     image: cloudflare/cloudflared:latest
@@ -32,3 +32,4 @@ services:
     depends_on:
       - app
     networks:
+      - onpe-network
