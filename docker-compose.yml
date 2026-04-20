@@ -24,7 +24,7 @@ services:
     restart: unless-stopped
     environment:
       - TUNNEL_TOKEN=${CLOUDFLARE_TUNNEL_TOKEN}
-    command: tunnel --no-autoupdate
+    command: tunnel run
     depends_on:
       - app
     networks:
