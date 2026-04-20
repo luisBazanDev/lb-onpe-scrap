@@ -23,9 +23,10 @@ function loadDatabase() {
   return JSON.parse(content);
 }
 
+const db = loadDatabase();
+
 // API Routes
 app.get("/api/summary", (req, res) => {
-  const db = loadDatabase();
   if (!db) {
     return res
       .status(404)
@@ -35,7 +36,6 @@ app.get("/api/summary", (req, res) => {
 });
 
 app.get("/api/partidos", (req, res) => {
-  const db = loadDatabase();
   if (!db) {
     return res
       .status(404)
@@ -51,7 +51,6 @@ app.get("/api/partidos", (req, res) => {
 });
 
 app.get("/api/mesas", (req, res) => {
-  const db = loadDatabase();
   if (!db) {
     return res
       .status(404)
@@ -61,7 +60,6 @@ app.get("/api/mesas", (req, res) => {
 });
 
 app.get("/api/regiones", (req, res) => {
-  const db = loadDatabase();
   if (!db) {
     return res
       .status(404)
@@ -76,7 +74,6 @@ app.get("/api/regiones", (req, res) => {
 });
 
 app.get("/api/metadata", (req, res) => {
-  const db = loadDatabase();
   if (!db) {
     return res
       .status(404)
@@ -86,7 +83,6 @@ app.get("/api/metadata", (req, res) => {
 });
 
 app.get("/api/errores", (req, res) => {
-  const db = loadDatabase();
   if (!db) {
     return res
       .status(404)
