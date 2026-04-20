@@ -16,19 +16,21 @@ services:
       - ./logs.txt:/app/logs.txt
     restart: unless-stopped
     networks:
-      - onpe-network
+      onpe-network:
+        ipv4_address: 172.20.0.20
 
   cloudflare-tunnel:
     image: cloudflare/cloudflared:latest
-    container_name: onpe-cloudflare-tunnel
-    command: tunnel run
-    environment:
-      - CLOUDFLARE_TUNNEL_TOKEN=${CLOUDFLARE_TUNNEL_TOKEN}
+    container_name: gpt-tokens-tunnel
     restart: unless-stopped
+    environment:
+      - TUNNEL_TOKEN=${CLOUDFLARE_TOKEN}
+    command: tunnel --no-autoupdate run
     depends_on:
       - app
     networks:
-      - onpe-network
+      onpe-network:
+        ipv4_address: 172.20.0.10
 
 networks:
   onpe-network:
