@@ -1,0 +1,35 @@
+version: "3.9"
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: onpe-app
+    ports:
+      - "${PORT:-3001}:${PORT:-3001}"
+    environment:
+      - PORT=${PORT:-3001}
+    volumes:
+      - ./db.json:/app/db.json
+      - ./public:/app/public
+      - ./logs.txt:/app/logs.txt
+    restart: unless-stopped
+    networks:
+      - onpe-network
+
+  cloudflare-tunnel:
+    image: cloudflare/cloudflared:latest
+    container_name: onpe-cloudflare-tunnel
+    command: tunnel run
+    environment:
+      - CLOUDFLARE_TUNNEL_TOKEN=${CLOUDFLARE_TUNNEL_TOKEN}
+    restart: unless-stopped
+    depends_on:
+      - app
+    networks:
+      - onpe-network
+
+networks:
+  onpe-network:
+    driver: bridge
