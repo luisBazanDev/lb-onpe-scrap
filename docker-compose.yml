@@ -24,7 +24,7 @@ services:
 
   cloudflare-tunnel:
     image: cloudflare/cloudflared:latest
-    container_name: gpt-tokens-tunnel
+    container_name: cloudflare-onpe-tunnel
     restart: unless-stopped
     environment:
       - TUNNEL_TOKEN=${CLOUDFLARE_TOKEN}
