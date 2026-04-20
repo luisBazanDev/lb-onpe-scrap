@@ -3,3 +3,4 @@ db.json
 logs.txt
 .cache/
 *.log
+.env

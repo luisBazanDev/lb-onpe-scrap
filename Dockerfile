@@ -8,7 +8,7 @@ RUN npm install
 
 COPY src/ ./src/
 COPY public/ ./public/
-COPY db.json ./db.json 2>/dev/null || true
+COPY db.json ./db.json
 
 EXPOSE 3001
 
